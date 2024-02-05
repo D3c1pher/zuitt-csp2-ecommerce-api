@@ -3,8 +3,8 @@ require("dotenv").config()
 
 import express from "express";
 import mongoose from "mongoose";
-import passport from "passport";
-import session from "express-session";
+// import passport from "passport";
+// import session from "express-session";
 import cors from "cors";
 
 require("./utils/passport.js");
@@ -24,24 +24,29 @@ app.use(express.urlencoded({ extended : true }));
 app.use(cors());
 
 /* ===== Google Login ===== */
-app.use(session({
-	secret: process.env.clientSecret,
-	resave: false,
-	saveUninitialized: false
-}));
-// Initializes the passport package when the application runs
-app.use(passport.initialize());
-// Creates a session using the passport package
-app.use(passport.session());
+// app.use(session({
+// 	secret: process.env.clientSecret,
+// 	resave: false,
+// 	saveUninitialized: false
+// }));
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 /* ===== Database Connection ===== */
 // Connect to our MongoDB database
-mongoose.connect("mongodb+srv://admin:admin123@capstone-2.s3zi0zl.mongodb.net/ecommerce-API?retryWrites=true&w=majority",
-		{
-			useNewUrlParser : true,
-			useUnifiedTopology : true
-		}
-);
+const connect = async () => {
+    try {
+        await mongoose.connect("mongodb+srv://admin:admin123@capstone-2.s3zi0zl.mongodb.net/ecommerce-API?retryWrites=true&w=majority",
+			{
+				useNewUrlParser : true,
+				useUnifiedTopology : true
+			}
+		);
+    } catch (error) {
+		throw error;
+    }
+};
+
 mongoose.connection.once("open", () => console.log("Now connected to MongoDB Atlas"));
 
 /* ===== Backend Routes ===== */
@@ -51,9 +56,22 @@ app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
 app.use("/carts", cartRoutes);
 
+/*  ===== Process Errors ===== */
+app.use((err, req, res, next) => {
+    const errorStatus = err.status || 500;
+    const errorMessage = err.message || "Something went wrong!";
+    return res.status(errorStatus).json({
+        success: false,
+        status: errorStatus,
+        message: errorMessage,
+        stack: err.stack,
+    });
+});
+
 /* ===== Server Gateway Response ===== */
 if(require.main === module){
 	app.listen(process.env.PORT || port, () => {
+		connect()
 		console.log(`API is now online on port ${ process.env.PORT || port }`)
 	})
 }
