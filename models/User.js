@@ -1,24 +1,36 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 
 const userSchema = new mongoose.Schema(
     {
         firstName: {
             type: String,
-            required: [true, 'First Name is Required']
+            required: [true, 'First Name is required'],
+            trim: true
         },
         lastName: {
             type: String,
-            required: [true, 'Last Name is Required']
+            required: [true, 'Last Name is required'],
+            trim: true
+        },
+        username: {
+            type: String,
+            required: [true, 'Username is required'],
+            unique: true,
+            trim: true,
+            minlength: [3, 'Username must be at least 3 characters long'],
+            maxlength: [20, 'Username cannot be longer than 20 characters']
         },
         email: {
             type: String,
-            required: [true, 'Email is Required'],
-            unique: true
+            required: [true, 'Email is required'],
+            unique: true,
+            trim: true,
+            lowercase: true
         },
         password: {
             type: String,
-            required: [true, 'Password is Required']
+            required: [true, 'Password is required']
         },
         isAdmin: {
             type: Boolean,
@@ -26,7 +38,7 @@ const userSchema = new mongoose.Schema(
         },
         mobileNo: {
             type: String,
-            required: [true, 'Mobile Number is Required']
+            required: [true, 'Mobile Number is required']
         }
     },
     { timestamps: true } // Date added and updated timestamp
