@@ -36,7 +36,7 @@ app.use(passport.session());
 
 /* ===== Database Connection ===== */
 // Connect to our MongoDB database
-mongoose.connect("mongodb+srv://admin:admin123@b337.czppwrz.mongodb.net/ecommerce-API?retryWrites=true&w=majority",
+mongoose.connect("mongodb+srv://admin:admin123@capstone-2.s3zi0zl.mongodb.net/ecommerce-API?retryWrites=true&w=majority",
 		{
 			useNewUrlParser : true,
 			useUnifiedTopology : true
