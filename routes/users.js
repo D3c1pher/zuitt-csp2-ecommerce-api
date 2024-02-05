@@ -1,9 +1,9 @@
 /* ===== Dependencies and Modules ===== */
-import express from "express";
-// import passport from "passport";
+const express = require("express");
+const passport = require("passport");
 
-import userController from "../controllers/user.js";
-import { verify, verifyAdmin, isLoggedIn } from "../utils/auth.js";
+const userController = require("../controllers/user.js");
+const { verify, verifyAdmin, isLoggedIn } = require("../utils/auth.js");
 
 /* ===== Routing Component ===== */
 const router = express.Router();
@@ -13,6 +13,12 @@ const router = express.Router();
 router.post("/", userController.registerUser);
 
 router.post("/login", userController.loginUser);
+
+router.post("/details", verify, userController.getUserDetails);
+
+router.put('/update-password', verify, userController.updatePassword);
+
+router.put('/:userId/set-as-admin', verify, verifyAdmin, userController.updateUserToAdmin);
 
 
 /* ===== Google Login ===== */
