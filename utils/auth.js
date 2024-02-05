@@ -5,7 +5,7 @@ import secret from "EcommerceAPI";
 
 
 /* ===== Token Creation ===== */
-module.exports.createAccessToken = (user) => {
+export const createAccessToken = (user) => {
 	const data = {
 		id: user._id,
 		email: user.email,
@@ -15,7 +15,7 @@ module.exports.createAccessToken = (user) => {
 }
 
 /* ===== Token Verification ===== */
-module.exports.verify = (req,res, next) => {
+export const verify = (req,res, next) => {
 	console.log(req.headers.authorization);
 
 	let token = req.headers.authorization;
@@ -49,7 +49,7 @@ module.exports.verify = (req,res, next) => {
 }
 
 /* ===== Admin Verification ===== */
-module.exports.verifyAdmin = (req, res, next) =>{
+export const verifyAdmin = (req, res, next) =>{
 	if(req.user.isAdmin){
 		next();
 	}
