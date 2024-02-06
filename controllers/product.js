@@ -1,0 +1,88 @@
+const Product = require("../models/Product");
+const { createError } = require("../utils/error.js");
+
+
+module.exports.createProduct = async (req, res, next) => {
+    try {
+        const { name, description, price } = req.body;
+
+        // Validate product data
+        if (!name || !description || !price) {
+            return next(createError(400, "Name, description, and price are required."));
+        }
+
+        // Check if product with same name already exists
+        const existingProduct = await Product.findOne({ name });
+        if (existingProduct) {
+            return next(createError(400, "Product with this name already exists."));
+        }
+    
+        // Create a new product instance
+        const newProduct = new Product({
+            name,
+            description,
+            price
+        });
+    
+        // Save the product to the database
+        await newProduct.save();
+    
+        res.status(201).json({ 
+            message: 'Product created successfully', 
+            product: newProduct 
+        });
+    } catch (err) {
+        console.error("Error in creating product: ", err);
+        return next(err);
+    }
+};
+
+/* ===== ===== */
+
+
+
+/* ===== ===== */
+
+module.exports.archiveProduct = async (req, res, next) => {
+    try {
+        let updateActiveField = {
+            isActive: false
+        };
+        
+        const archivedProduct = await Product.findByIdAndUpdate(req.params.productId, updateActiveField, { new: true });
+
+        if (!archivedProduct) {
+            return next(createError(404, "Product not found."));
+        }
+        
+        return res.status(200).send({ 
+            message: 'Product archived successfully.', 
+            archivedProduct: archivedProduct 
+        });
+    } catch (err) {
+        console.error("Error in archiving a product: ", err);
+        return next(err);
+    }
+};
+
+module.exports.activateProduct = async (req, res, next) => {
+    try {
+        let updateActiveField = {
+            isActive: true
+        };
+        
+        const activatedProduct = await Product.findByIdAndUpdate(req.params.productId, updateActiveField, { new: true });
+
+        if (!activatedProduct) {
+            return next(createError(404, "Product not found."));
+        }
+        
+        return res.status(200).send({ 
+            message: 'Product activated successfully.', 
+            activatedProduct: activatedProduct 
+        });
+    } catch (err) {
+        console.error("Error in activating a product: ", err);
+        return next(err);
+    }
+};
