@@ -8,14 +8,14 @@ const { verify, verifyAdmin } = require("../utils/auth.js");
 const router = express.Router();
 
 
-/* ===== User Routes ===== */
+/* ===== Product Routes ===== */
 router.post("/", verify, verifyAdmin, productController.createProduct);
 
 router.get("/all", verify, productController.getAllProducts);
 
-// router.get("/active", verify, productController.getAllActive);
+router.get("/active", verify, productController.getAllActive);
 
-// router.get("/:productId", verify, productController.getProduct);
+router.get("/:productId", verify, productController.getProduct);
 
 router.put("/:productId", verify, verifyAdmin, productController.updateProductInfo);
 

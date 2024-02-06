@@ -2,6 +2,7 @@ const Product = require("../models/Product");
 const { createError } = require("../utils/error.js");
 
 
+/* ===== Product Features ===== */
 module.exports.createProduct = async (req, res, next) => {
     try {
         const { name, description, price } = req.body;
@@ -37,8 +38,6 @@ module.exports.createProduct = async (req, res, next) => {
     }
 };
 
-/* ===== ===== */
-
 module.exports.getAllProducts = async (req, res, next) => {
     try {
         const products = await Product.find({});
@@ -50,6 +49,38 @@ module.exports.getAllProducts = async (req, res, next) => {
         }
     } catch (err) {
         console.error("Error in finding all products: ", err);
+        return next(err);
+    }
+};
+
+module.exports.getAllActive = async (req, res, next) => {
+    try {
+        const products = await Product.find({ isActive: true });
+
+        if (products.length > 0) {
+            return res.status(200).send({ products });
+        } else {
+            return next(createError(404, "No active products found."));
+        }
+
+    } catch (err) {
+        console.error("Error in finding active products: ", err);
+        return next(err);
+    }
+};
+
+module.exports.getProduct = async (req, res, next) => {
+    try {
+        const productId = req.params.productId;
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return next(createError(404, "Product not found."));
+        }
+        return res.status(200).send({ product });
+
+    } catch (err) {
+        console.error("Error in finding a product: ", err);
         return next(err);
     }
 };
@@ -78,8 +109,6 @@ module.exports.updateProductInfo = async (req, res, next) => {
         return next(err);
     }
 };
-
-/* ===== ===== */
 
 module.exports.archiveProduct = async (req, res, next) => {
     try {
