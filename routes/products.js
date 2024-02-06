@@ -11,13 +11,13 @@ const router = express.Router();
 /* ===== User Routes ===== */
 router.post("/", verify, verifyAdmin, productController.createProduct);
 
-// router.get("/all", verify, productController.getAllProducts);
+router.get("/all", verify, productController.getAllProducts);
 
 // router.get("/active", verify, productController.getAllActive);
 
 // router.get("/:productId", verify, productController.getProduct);
 
-// router.put("/:productId", verify, verifyAdmin, productController.updateProduct);
+router.put("/:productId", verify, verifyAdmin, productController.updateProductInfo);
 
 router.put("/archive/:productId", verify, verifyAdmin, productController.archiveProduct);
 

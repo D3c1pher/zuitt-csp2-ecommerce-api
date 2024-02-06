@@ -39,7 +39,45 @@ module.exports.createProduct = async (req, res, next) => {
 
 /* ===== ===== */
 
+module.exports.getAllProducts = async (req, res, next) => {
+    try {
+        const products = await Product.find({});
 
+        if(products.length > 0) {
+            return res.status(200).send({ products });
+        } else {
+            return next(createError(404, "No products found."));
+        }
+    } catch (err) {
+        console.error("Error in finding all products: ", err);
+        return next(err);
+    }
+};
+
+module.exports.updateProductInfo = async (req, res, next) => {
+    try {
+        const productId = req.params.productId;
+        
+        let updatedProduct = {
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price
+        }
+
+        const product = await Product.findByIdAndUpdate(productId, updatedProduct, { new: true });
+
+        if (!product) {
+            return next(createError(404, "Product not found."));
+        }
+
+        return res.status(200).send({
+            message: "Product updated successfully", updatedProduct: product
+        });
+    } catch (err) {
+        console.error("Error in updating a product: ", err);
+        return next(err);
+    }
+};
 
 /* ===== ===== */
 
@@ -83,6 +121,7 @@ module.exports.activateProduct = async (req, res, next) => {
         });
     } catch (err) {
         console.error("Error in activating a product: ", err);
+
         return next(err);
     }
 };
