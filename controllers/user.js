@@ -128,7 +128,7 @@ module.exports.loginUser = async (req, res, next) => {
 
     } catch (err) {
         console.error("Error in logging in: ", err);
-        next(err);
+        return next(err);
     }
 };
 
@@ -147,7 +147,7 @@ module.exports.getUserDetails = async (req, res, next) => {
         return res.status(200).send({user});
     } catch (err) {
         console.error("Error in fetching user details: ", err);
-        next(err);
+        return next(err);
     }
 };
 
@@ -181,7 +181,7 @@ module.exports.updatePassword = async (req, res) => {
 		res.status(200).json({ message: "Password reset successfully." });
 	} catch (error) {
 		console.error("Error in updating password: ", err);
-		next(err);
+		return next(err);
 	}
 };
 
@@ -211,6 +211,6 @@ module.exports.updateUserToAdmin = async (req, res, next) => {
 		res.status(200).json({ message: 'User updated to admin successfully.' });
     } catch (err) {
         console.error('Error in updating user to admin: ', err);
-        next(err);
+        return next(err);
     }
 };
