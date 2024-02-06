@@ -55,7 +55,7 @@ mongoose.connection.once("open", () => console.log("Now connected to MongoDB Atl
 /* ===== Backend Routes ===== */
 // http://localhost:4000/
 app.use("/users", userRoutes);
-// app.use("/products", productRoutes);
+app.use("/products", productRoutes);
 // app.use("/orders", orderRoutes);
 // app.use("/carts", cartRoutes);
 
