@@ -4,31 +4,31 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        required: [true, 'Name is required'],
         trim: true,
-        minlength: 2,
-        maxlength: 100
+        minlength: [2, 'Name must be at least 2 characters long'],
+        maxlength: [100, 'Name cannot exceed 100 characters']
     },
     description: {
         type: String,
-        required: true,
-        minlength: 10
+        required: [true, 'Description is required'],
+        minlength: [10, 'Description must be at least 10 characters long']
     },
     price: {
         type: Number,
-        required: true,
-        min: 0
+        required: [true, 'Price is required'],
+        min: [0, 'Price must be non-negative']
     },
     isActive: {
         type: Boolean,
         default: true
     },
-    createdAt: {
+    createdOn: {
         type: Date,
         default: Date.now,
         immutable: true
     },
-    updatedAt: {
+    updatedOn: {
         type: Date,
         default: Date.now
     }
