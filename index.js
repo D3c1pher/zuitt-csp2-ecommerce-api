@@ -13,6 +13,7 @@ const productRoutes = require("./routes/products.js");
 const orderRoutes = require("./routes/orders.js");
 const cartRoutes = require("./routes/carts.js");
 
+
 /* ===== Server Setup ===== */
 const app = express();
 dotenv.config();
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+
 /* ===== Google Login ===== */
 // app.use(
 //     session({
@@ -35,6 +37,7 @@ app.use(cors());
 // );
 // app.use(passport.initialize());
 // app.use(passport.session());
+
 
 /* ===== Database Connection ===== */
 const connect = async () => {
@@ -52,12 +55,14 @@ const connect = async () => {
 };
 mongoose.connection.once("open", () => console.log("Now connected to MongoDB Atlas"));
 
+
 /* ===== Backend Routes ===== */
 // http://localhost:4000/
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
+app.use("/carts", cartRoutes);
 // app.use("/orders", orderRoutes);
-// app.use("/carts", cartRoutes);
+
 
 /*  ===== Error Handling Middleware ===== */
 app.use((err, req, res, next) => {
@@ -70,6 +75,7 @@ app.use((err, req, res, next) => {
         stack: err.stack
     });
 });
+
 
 /* ===== Server Gateway Response ===== */
 if (require.main === module) {
