@@ -2,10 +2,10 @@ const Cart = require("../models/Cart.js");
 // const Product = require("../models/Product.js");
 const { createError } = require("../utils/error.js");
 const { 
-    getOrCreateUserCart,
+    getUserCart,
+    createUserCart,
     getProductById,
     updateCartWithItem,
-    formatMoney,
     formatCart,
     updateCartItemQuantity 
 } = require("../helpers/cartHelper.js");
@@ -15,7 +15,7 @@ const {
 
 module.exports.getUserCart = async (req, res, next) => {
     try {
-        const userCart = await getOrCreateUserCart(req.user.id);
+        const userCart = await getUserCart(req.user.id);
 
         if (!userCart) {
             return next(createError(404, "User's cart not found."));
@@ -26,10 +26,6 @@ module.exports.getUserCart = async (req, res, next) => {
         }
         
         const formattedCart = formatCart(userCart);
-        formattedCart.cartItems.forEach(item => {
-            item.subtotal = formatMoney(item.subtotal);
-        });
-        formattedCart.totalPrice = formatMoney(formattedCart.totalPrice);
 
         return res.status(200).json({ userCart: formattedCart });
     } catch (err) {
@@ -46,7 +42,7 @@ module.exports.addToCart = async (req, res, next) => {
             return next(createError(400, "Invalid input data. Please provide a valid productId and a positive quantity."));
         }
 
-        let cart = await getOrCreateUserCart(req.user.id);
+        let cart = await createUserCart(req.user.id);
 
         const product = await getProductById(productId);
         
@@ -58,24 +54,22 @@ module.exports.addToCart = async (req, res, next) => {
 
         updateCartWithItem(cart, productId, quantity, subtotal);
 
-        cart = await Cart.findById(cart._id).lean(); 
-        cart.cartItems.forEach(item => {
-            item.subtotal = formatMoney(item.subtotal);
-        });
-        cart.totalPrice = formatMoney(cart.totalPrice);
+        cart = await Cart.findById(cart._id).lean();
 
-        return res.status(200).json({ userCart: cart });
+        const formattedCart = formatCart(cart);
+
+        return res.status(200).json({ userCart: formattedCart });
     } catch (err) {
         console.error("Error in adding to cart: ", err);
         return next(err);
     }
 };
 
-module.exports.changeProductQuantity = async (req, res, next) => {
+module.exports.updateProductQuantity = async (req, res, next) => {
     try {
         const { productId, quantity } = req.body;
         
-        const cart = await getOrCreateUserCart(req.user.id);
+        const cart = await createUserCart(req.user.id);
 
         if (!cart) {
             return next(createError(404, "Cart not found."));
@@ -84,12 +78,10 @@ module.exports.changeProductQuantity = async (req, res, next) => {
         await updateCartItemQuantity(cart, productId, quantity);
 
         const updatedCart = await Cart.findById(cart._id).lean(); 
-        updatedCart.cartItems.forEach(item => {
-            item.subtotal = formatMoney(item.subtotal);
-        });
-        updatedCart.totalPrice = formatMoney(updatedCart.totalPrice);
 
-        return res.status(200).json({ userCart: updatedCart });
+        const formattedCart = formatCart(updatedCart);
+
+        return res.status(200).json({ userCart: formattedCart });
     } catch (err) {
         console.error("Error in updating product quantity: ", err);
         return next(err);
