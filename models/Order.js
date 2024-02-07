@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
+
 const orderSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: [true, "User ID is required"]
+        required: [true, "User ID is required"],
+        index: true
     },
     productsOrdered: [{
         productId: {
@@ -12,11 +14,13 @@ const orderSchema = new mongoose.Schema({
         },
         quantity: {
             type: Number,
-            required: [true, "Quantity is required"]
+            required: [true, "Quantity is required"],
+            min: [0, "Quantity must be non-negative"]
         },
         subtotal: {
             type: Number,
-            required: [true, "Subtotal is required"]
+            required: [true, "Subtotal is required"],
+            min: [0, "Subtotal must be non-negative"]
         }
     }],
     totalPrice: {
@@ -32,5 +36,6 @@ const orderSchema = new mongoose.Schema({
         default: 'Pending'
     }
 });
+
 
 module.exports = mongoose.model('Order', orderSchema);
