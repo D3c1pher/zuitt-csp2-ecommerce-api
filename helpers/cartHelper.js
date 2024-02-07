@@ -10,13 +10,22 @@ function formatMoney(value) {
     return formattedValue;
 }
 
-// Helper function to get or create user's cart
-async function getOrCreateUserCart(userId) {
+// Helper function to get user's cart
+async function getUserCart(userId) {
     return await Cart.findOneAndUpdate(
         { userId },
         { $setOnInsert: { userId, cartItems: [] } },
         { upsert: true, new: true }
-    );
+    ).lean();
+}
+
+// Helper function to create user's cart
+async function createUserCart(userId) {
+    return await Cart.findOneAndUpdate(
+        { userId },
+        { $setOnInsert: { userId, cartItems: [] } },
+        { upsert: true, new: true }
+    )
 }
 
 // Helper function to get product by ID
@@ -71,10 +80,10 @@ async function updateCartItemQuantity(cart, productId, quantity) {
 
 
 module.exports = {
-    getOrCreateUserCart,
+    getUserCart,
+    createUserCart,
     getProductById,
     updateCartWithItem,
-    formatMoney,
     formatCart,
     updateCartItemQuantity
 };
