@@ -13,7 +13,7 @@ router.get("/", verify, cartController.getUserCart);
 
 router.put("/addToCart", verify, cartController.addToCart);
 
-router.put("/udpateQuantity", verify, cartController.changeProductQuantity);
+router.put("/updateQuantity", verify, cartController.updateProductQuantity);
 
 // router.delete("/:productId/removeFromCart", verify, cartController.removeProductFromCart);
 
