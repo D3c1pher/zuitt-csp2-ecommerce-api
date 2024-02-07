@@ -1,4 +1,4 @@
-const Product = require("../models/Product");
+const Product = require("../models/Product.js");
 const { createError } = require("../utils/error.js");
 
 
@@ -89,20 +89,26 @@ module.exports.updateProductInfo = async (req, res, next) => {
     try {
         const productId = req.params.productId;
         
-        let updatedProduct = {
+        let updatedProductData = {
             name: req.body.name,
             description: req.body.description,
             price: req.body.price
-        }
+        };
 
-        const product = await Product.findByIdAndUpdate(productId, updatedProduct, { new: true });
+        const product = await Product.findById(productId);
 
         if (!product) {
             return next(createError(404, "Product not found."));
         }
 
+        product.name = updatedProductData.name;
+        product.description = updatedProductData.description;
+        product.price = updatedProductData.price;
+
+        const updatedProduct = await product.save();
+
         return res.status(200).send({
-            message: "Product updated successfully", updatedProduct: product
+            message: "Product updated successfully.", updatedProduct: updatedProduct
         });
     } catch (err) {
         console.error("Error in updating a product: ", err);
@@ -112,16 +118,18 @@ module.exports.updateProductInfo = async (req, res, next) => {
 
 module.exports.archiveProduct = async (req, res, next) => {
     try {
-        let updateActiveField = {
-            isActive: false
-        };
+        const productId = req.params.productId;
         
-        const archivedProduct = await Product.findByIdAndUpdate(req.params.productId, updateActiveField, { new: true });
+        const product = await Product.findById(productId);
 
-        if (!archivedProduct) {
+        if (!product) {
             return next(createError(404, "Product not found."));
         }
-        
+
+        product.isActive = false;
+
+        const archivedProduct = await product.save();
+
         return res.status(200).send({ 
             message: 'Product archived successfully.', 
             archivedProduct: archivedProduct 
@@ -134,23 +142,24 @@ module.exports.archiveProduct = async (req, res, next) => {
 
 module.exports.activateProduct = async (req, res, next) => {
     try {
-        let updateActiveField = {
-            isActive: true
-        };
+        const productId = req.params.productId;
         
-        const activatedProduct = await Product.findByIdAndUpdate(req.params.productId, updateActiveField, { new: true });
+        const product = await Product.findById(productId);
 
-        if (!activatedProduct) {
+        if (!product) {
             return next(createError(404, "Product not found."));
         }
-        
+
+        product.isActive = true;
+
+        const activatedProduct = await product.save();
+
         return res.status(200).send({ 
             message: 'Product activated successfully.', 
             activatedProduct: activatedProduct 
         });
     } catch (err) {
         console.error("Error in activating a product: ", err);
-
         return next(err);
     }
 };
