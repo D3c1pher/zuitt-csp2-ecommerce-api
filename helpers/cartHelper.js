@@ -30,7 +30,7 @@ async function createUserCart(userId) {
 
 // Helper function to get product by ID
 async function getProductById(productId) {
-    return await Product.findById(productId);
+    return await Product.findById(productId).lean();
 }
 
 // Helper function to calculate total price
