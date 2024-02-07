@@ -1,13 +1,17 @@
 const Cart = require("../models/Cart.js");
-// const Product = require("../models/Product.js");
+const Product = require("../models/Product.js");
 const { createError } = require("../utils/error.js");
-const { 
-    getUserCart,
-    createUserCart,
+const {
+    findUserCartLean,
+    findUserCart,
     getProductById,
-    updateCartWithItem,
+    calculateTotalPrice,
+    formatMoney,
+    formatCartSubtotal,
+    formatCartTotalPrice,
     formatCart,
-    updateCartItemQuantity 
+    updateCartWithItem,
+    updateCartItemQuantity
 } = require("../helpers/cartHelper.js");
 
 
@@ -15,10 +19,9 @@ const {
 
 module.exports.getUserCart = async (req, res, next) => {
     try {
-        const userCart = await getUserCart(req.user.id);
-
+        const userCart = await findUserCartLean(req.user.id);
         if (!userCart) {
-            return next(createError(404, "User's cart not found."));
+            throw createError(404, "User's cart not found.");
         }
 
         if (userCart.cartItems.length === 0) {
@@ -26,7 +29,6 @@ module.exports.getUserCart = async (req, res, next) => {
         }
         
         const formattedCart = formatCart(userCart);
-
         return res.status(200).json({ userCart: formattedCart });
     } catch (err) {
         console.error("Error in getting user cart: ", err);
@@ -37,27 +39,22 @@ module.exports.getUserCart = async (req, res, next) => {
 module.exports.addToCart = async (req, res, next) => {
     try {
         const { productId, quantity } = req.body;
-
         if (!productId || !quantity || quantity <= 0) {
-            return next(createError(400, "Invalid input data. Please provide a valid productId and a positive quantity."));
+            throw createError(400, "Invalid input data. Please provide a valid productId and a positive quantity.");
         }
-
-        let cart = await createUserCart(req.user.id);
-
+        
+        let cart = await findUserCart(req.user.id);
         const product = await getProductById(productId);
         
         if (!product) {
-            return next(createError(404, "Product not found."));
+            throw createError(404, "Product not found.");
         }
 
         const subtotal = product.price * quantity;
-
         updateCartWithItem(cart, productId, quantity, subtotal);
 
         cart = await Cart.findById(cart._id).lean();
-
         const formattedCart = formatCart(cart);
-
         return res.status(200).json({ userCart: formattedCart });
     } catch (err) {
         console.error("Error in adding to cart: ", err);
@@ -68,17 +65,14 @@ module.exports.addToCart = async (req, res, next) => {
 module.exports.updateProductQuantity = async (req, res, next) => {
     try {
         const { productId, quantity } = req.body;
-        
-        const cart = await createUserCart(req.user.id);
-
+        const cart = await findUserCart(req.user.id);
         if (!cart) {
-            return next(createError(404, "Cart not found."));
+            throw createError(404, "Cart not found.");
         }
 
         await updateCartItemQuantity(cart, productId, quantity);
 
-        const updatedCart = await Cart.findById(cart._id).lean(); 
-
+        const updatedCart = await Cart.findById(cart._id).lean();
         const formattedCart = formatCart(updatedCart);
 
         return res.status(200).json({ userCart: formattedCart });
@@ -88,67 +82,112 @@ module.exports.updateProductQuantity = async (req, res, next) => {
     }
 };
 
+module.exports.removeProductFromCart = async (req, res, next) => {
+    try {
+        const productId = req.params.productId;
+        const userId = req.user.id;
 
-/* ===== ===== */
+        let cart = await findUserCart(userId);
 
+        const productIndex = cart.cartItems.findIndex(item => item.productId.equals(productId));
 
-// // Remove product from cart
-// exports.removeProductFromCart = async (req, res) => {
-//     const { productId } = req.params;
-//     try {
-//         const cart = await Cart.findOne({ user: req.user.id });
-//         if (!cart) {
-//             return res.status(404).json({ message: "Cart not found" });
-//         }
-//         cart.items = cart.items.filter(item => item.product.toString() !== productId);
-//         await cart.save();
-//         res.json(cart);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
+        if (productIndex === -1) {
+            throw createError(404, "Product not found in cart.");
+        }
 
-// // Clear all items from cart
-// exports.clearCartItems = async (req, res) => {
-//     try {
-//         const cart = await Cart.findOne({ user: req.user.id });
-//         if (!cart) {
-//             return res.status(404).json({ message: "Cart not found" });
-//         }
-//         cart.items = [];
-//         await cart.save();
-//         res.json(cart);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
+        cart.cartItems.splice(productIndex, 1);
+        cart.totalPrice = calculateTotalPrice(cart.cartItems);
 
-// // Search products in cart by name
-// exports.searchByName = async (req, res) => {
-//     const { name } = req.body;
-//     try {
-//         const cart = await Cart.findOne({ user: req.user.id }).populate({
-//             path: "items.product",
-//             match: { name: { $regex: new RegExp(name, "i") } }
-//         });
-//         const filteredItems = cart ? cart.items.filter(item => item.product !== null) : [];
-//         res.json(filteredItems);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
+        await cart.save();
 
-// // Search products in cart by price
-// exports.searchByPrice = async (req, res) => {
-//     const { minPrice, maxPrice } = req.body;
-//     try {
-//         const cart = await Cart.findOne({ user: req.user.id }).populate({
-//             path: "items.product",
-//             match: { price: { $gte: minPrice, $lte: maxPrice } }
-//         });
-//         const filteredItems = cart ? cart.items.filter(item => item.product !== null) : [];
-//         res.json(filteredItems);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
+        const updatedCart = await Cart.findById(cart._id).lean();
+        const formattedCart = formatCart(updatedCart);
+
+        return res.status(200).json({ message: "Product removed from cart successfully", updatedCart: formattedCart });
+    } catch (err) {
+        console.error("Error in removing the product: ", err);
+        return next(err);
+    }
+};
+
+module.exports.clearCartItems = async (req, res, next) => {
+    try {
+        const { deletedCount } = await Cart.deleteMany({ userId: req.user.id });
+        if (deletedCount === 0) {
+            throw createError(404, "No Items Available.");
+        }
+
+        return res.status(200).json({ message: "All items cleared from the cart." });
+    } catch (err) {
+        console.error("Error in clearing the cart items: ", err);
+        return next(err);
+    }
+};
+
+module.exports.searchByName = async (req, res, next) => {
+    try {
+        const { name } = req.body;
+        if (!name || typeof name !== 'string' || name.trim() === '') {
+            throw createError(400, "Please provide a valid product name to search.");
+        }
+
+        const product = await Product.findOne({ name: { $regex: new RegExp(name, "i") } });
+        if (!product) {
+            throw createError(404, "Product not found with the given name.");
+        }
+
+        const cart = await findUserCartLean(req.user.id);
+        if (!cart) {
+            throw createError(404, "Cart not found for the user.");
+        }
+
+        const cartItem = cart.cartItems.find(item => item.productId.equals(product._id));
+        if (!cartItem) {
+            throw createError(404, "Product not found in the user's cart.");
+        }
+
+        cartItem.subtotal = formatMoney(cartItem.subtotal);
+
+        return res.status(200).json({ cartItem });
+    } catch (err) {
+        console.error("Error in searching items by name: ", err);
+        return next(err);
+    }
+};
+
+module.exports.searchByPrice = async (req, res, next) => {
+    try {
+        const { minPrice, maxPrice } = req.body;
+
+        if (typeof minPrice !== 'number' || typeof maxPrice !== 'number' || minPrice < 0 || maxPrice < 0) {
+            throw createError(400, "Please provide valid minimum and maximum prices.");
+        }
+
+        if (minPrice >= maxPrice) {
+            throw createError(400, "Minimum price must be less than maximum price.");
+        }
+
+        const productsWithinPriceRange = await Product.find({ price: { $gte: minPrice, $lte: maxPrice } });
+        if (productsWithinPriceRange.length === 0) {
+            throw createError(404, "No products found within the specified price range.");
+        }
+        
+        const cart = await findUserCartLean(req.user.id);
+        if (!cart) {
+            throw createError(404, "Cart not found for the user.");
+        }
+
+        const cartItems = cart.cartItems.filter(item => {
+            return productsWithinPriceRange.some(product => product._id.equals(item.productId));
+        });
+
+        cartItems.forEach(item => {
+            item.subtotal = formatMoney(item.subtotal);
+        });
+
+        return res.status(200).json({ cartItems });
+    } catch (err) {
+        console.error("Error in searching products by price: ", err);
+        return next(err);
+    }
+};

@@ -4,14 +4,8 @@ const Product = require("../models/Product.js");
 
 /* ===== Helper Functions ===== */
 
-// Helper function to format money values
-function formatMoney(value) {
-    const formattedValue = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(value);
-    return formattedValue;
-}
-
-// Helper function to get user's cart
-async function getUserCart(userId) {
+// Helper function to create user's cart
+async function findUserCartLean(userId) {
     return await Cart.findOneAndUpdate(
         { userId },
         { $setOnInsert: { userId, cartItems: [] } },
@@ -19,8 +13,8 @@ async function getUserCart(userId) {
     ).lean();
 }
 
-// Helper function to create user's cart
-async function createUserCart(userId) {
+// Helper function to get user's cart
+async function findUserCart(userId) {
     return await Cart.findOneAndUpdate(
         { userId },
         { $setOnInsert: { userId, cartItems: [] } },
@@ -33,10 +27,48 @@ async function getProductById(productId) {
     return await Product.findById(productId).lean();
 }
 
+/* ========== ========== */
+
 // Helper function to calculate total price
 function calculateTotalPrice(cartItems) {
     return cartItems.reduce((total, item) => total + item.subtotal, 0);
 }
+
+// Helper function to format money values
+function formatMoney(value) {
+    const formattedValue = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(value);
+    return formattedValue;
+}
+
+// Format money subtotal values in the cart before sending the response
+function formatCartSubtotal(cart) {
+    cart.cartItems.forEach(item => {
+        item.subtotal = formatMoney(item.subtotal);
+    });
+    return cart;
+} 
+
+// Format money totalPrice values in the cart before sending the response
+function formatCartTotalPrice(cart) {
+    cart.totalPrice = formatMoney(cart.totalPrice);
+    return cart;
+}
+
+// Format money values in the cart before sending the response
+function formatCart(cart) {
+    return formatCartSubtotal(formatCartTotalPrice(cart));
+}
+
+// // Format money values in the cart before sending the response
+// function formatCart(cart) {
+//     cart.cartItems.forEach(item => {
+//         item.subtotal = formatMoney(item.subtotal);
+//     });
+//     cart.totalPrice = formatMoney(cart.totalPrice);
+//     return cart;
+// }
+
+/* ========== ========== */
 
 // Helper function to update cart with new item
 function updateCartWithItem(cart, productId, quantity, subtotal) {
@@ -51,15 +83,6 @@ function updateCartWithItem(cart, productId, quantity, subtotal) {
 
     cart.totalPrice = calculateTotalPrice(cart.cartItems);
     cart.save();
-}
-
-// Format money values in the cart before sending the response
-function formatCart(cart) {
-    cart.cartItems.forEach(item => {
-        item.subtotal = formatMoney(item.subtotal);
-    });
-    cart.totalPrice = formatMoney(cart.totalPrice);
-    return cart;
 }
 
 // Helper function to update cart item quantity
@@ -80,10 +103,14 @@ async function updateCartItemQuantity(cart, productId, quantity) {
 
 
 module.exports = {
-    getUserCart,
-    createUserCart,
+    findUserCartLean,
+    findUserCart,
     getProductById,
-    updateCartWithItem,
+    calculateTotalPrice,
+    formatMoney,
+    formatCartSubtotal,
+    formatCartTotalPrice,
     formatCart,
+    updateCartWithItem,
     updateCartItemQuantity
 };

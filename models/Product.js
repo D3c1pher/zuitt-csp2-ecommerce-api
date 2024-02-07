@@ -34,15 +34,9 @@ const productSchema = new mongoose.Schema({
     }
 });
 
-
-// Add virtual for formatted price
-productSchema.virtual('formattedPrice').get(function() {
-    return `₱ ${this.price.toFixed(2)}`;
-});
-
-// Add pre-save hook for updating updatedAt
+// Add pre-save hook for updating updatedOn
 productSchema.pre('save', function(next) {
-    this.updatedAt = new Date();
+    this.updatedOn = new Date();
     next();
 });
 
