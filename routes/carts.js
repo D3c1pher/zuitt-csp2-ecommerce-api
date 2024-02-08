@@ -19,9 +19,5 @@ router.delete("/:productId/removeFromCart", verify, cartController.removeProduct
 
 router.delete("/clearCart", verify, cartController.clearCartItems);
 
-router.post("/searchByName", verify, cartController.searchByName);
-
-router.post("/searchByPrice", verify, cartController.searchByPrice);
-
 
 module.exports = router;

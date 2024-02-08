@@ -22,17 +22,6 @@ function validateProductInput(productId, quantity) {
     }
 }
 
-function validatePriceInput(minPrice, maxPrice) {
-    if (typeof minPrice !== 'number' || typeof maxPrice !== 'number' || minPrice < 0 || maxPrice < 0) {
-        throw createError(400, "Please provide valid minimum and maximum prices.");
-    }
-
-    if (minPrice >= maxPrice) {
-        throw createError(400, "Minimum price must be less than maximum price.");
-    }
-}
-
-
 /* ===== Cart Features ===== */
 
 module.exports.getUserCart = async (req, res, next) => {
@@ -136,67 +125,6 @@ module.exports.clearCartItems = async (req, res, next) => {
         return res.status(200).json({ message: "All items cleared from the cart." });
     } catch (err) {
         console.error("Error in clearing the cart items: ", err);
-        return next(err);
-    }
-};
-
-module.exports.searchByName = async (req, res, next) => {
-    try {
-        const { name } = req.body;
-        if (!name || typeof name !== 'string' || name.trim() === '') {
-            throw createError(400, "Please provide a valid product name to search.");
-        }
-
-        const product = await Product.findOne({ name: { $regex: new RegExp(name, "i") } });
-        if (!product) {
-            throw createError(404, "Product not found with the given name.");
-        }
-
-        const cart = await findOrCreateUserCartLean(req.user.id);
-        if (!cart) {
-            throw createError(404, "Cart not found for the user.");
-        }
-
-        const cartItem = cart.cartItems.find(item => item.productId.equals(product._id));
-        if (!cartItem) {
-            throw createError(404, "Product not found in the user's cart.");
-        }
-
-        cartItem.subtotal = formatMoney(cartItem.subtotal);
-
-        return res.status(200).json({ cartItem });
-    } catch (err) {
-        console.error("Error in searching items by name: ", err);
-        return next(err);
-    }
-};
-
-module.exports.searchByPrice = async (req, res, next) => {
-    try {
-        const { minPrice, maxPrice } = req.body;
-        validatePriceInput(minPrice, maxPrice);
-
-        const productsWithinPriceRange = await Product.find({ price: { $gte: minPrice, $lte: maxPrice } });
-        if (productsWithinPriceRange.length === 0) {
-            throw createError(404, "No products found within the specified price range.");
-        }
-        
-        const cart = await findOrCreateUserCartLean(req.user.id);
-        if (!cart) {
-            throw createError(404, "Cart not found for the user.");
-        }
-
-        const cartItems = cart.cartItems.filter(item => {
-            return productsWithinPriceRange.some(product => product._id.equals(item.productId));
-        });
-
-        cartItems.forEach(item => {
-            item.subtotal = formatMoney(item.subtotal);
-        });
-
-        return res.status(200).json({ cartItems });
-    } catch (err) {
-        console.error("Error in searching products by price: ", err);
         return next(err);
     }
 };
