@@ -22,12 +22,12 @@ async function findOrCreateUserCart(userId) {
 }
 
 // Updates cart with a new item or increments the quantity of an existing item
-async function updateCartWithItem(cart, productId, quantity) {
+async function updateCartWithItem(cart, productId, quantity, subtotal) {
     const existingItem = cart.cartItems.find(item => item.productId.toString() === productId);
     
     if (existingItem) {
         existingItem.quantity += quantity;
-        existingItem.subtotal += existingItem.price * quantity; 
+        existingItem.subtotal += subtotal;
     } else {
         const product = await Product.findById(productId).lean();
         if (product) {
@@ -45,7 +45,7 @@ async function updateCartItemQuantity(cart, productId, quantity) {
 
     if (cartItem) {
         cartItem.quantity = quantity;
-        const product = await getProductById(productId);
+        const product = await Product.findById(productId).lean();
         if (product) {
             cartItem.subtotal = product.price * quantity;
         }
