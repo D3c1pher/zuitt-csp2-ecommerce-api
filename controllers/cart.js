@@ -14,7 +14,27 @@ const {
 } = require("../helpers/cartManagement.js");
 
 
+/* ===== Validation Functions ===== */
+
+function validateProductInput(productId, quantity) {
+    if (!productId || !quantity || quantity <= 0) {
+        throw createError(400, "Invalid input data. Please provide a valid productId and a positive quantity.");
+    }
+}
+
+function validatePriceInput(minPrice, maxPrice) {
+    if (typeof minPrice !== 'number' || typeof maxPrice !== 'number' || minPrice < 0 || maxPrice < 0) {
+        throw createError(400, "Please provide valid minimum and maximum prices.");
+    }
+
+    if (minPrice >= maxPrice) {
+        throw createError(400, "Minimum price must be less than maximum price.");
+    }
+}
+
+
 /* ===== Cart Features ===== */
+
 module.exports.getUserCart = async (req, res, next) => {
     try {
         const userCart = await findOrCreateUserCartLean(req.user.id);
@@ -37,9 +57,7 @@ module.exports.getUserCart = async (req, res, next) => {
 module.exports.addToCart = async (req, res, next) => {
     try {
         const { productId, quantity } = req.body;
-        if (!productId || !quantity || quantity <= 0) {
-            throw createError(400, "Invalid input data. Please provide a valid productId and a positive quantity.");
-        }
+        validateProductInput(productId, quantity);
         
         let cart = await findOrCreateUserCart(req.user.id);
         const product = await Product.findById(productId).lean();
@@ -156,14 +174,7 @@ module.exports.searchByName = async (req, res, next) => {
 module.exports.searchByPrice = async (req, res, next) => {
     try {
         const { minPrice, maxPrice } = req.body;
-
-        if (typeof minPrice !== 'number' || typeof maxPrice !== 'number' || minPrice < 0 || maxPrice < 0) {
-            throw createError(400, "Please provide valid minimum and maximum prices.");
-        }
-
-        if (minPrice >= maxPrice) {
-            throw createError(400, "Minimum price must be less than maximum price.");
-        }
+        validatePriceInput(minPrice, maxPrice);
 
         const productsWithinPriceRange = await Product.find({ price: { $gte: minPrice, $lte: maxPrice } });
         if (productsWithinPriceRange.length === 0) {
