@@ -1,25 +1,23 @@
+/* ===== Dependencies and Modules ===== */
 const Cart = require("../models/Cart.js");
 const Product = require("../models/Product.js");
-const { createError } = require("../utils/error.js");
-const {
-    findUserCartLean,
-    findUserCart,
-    getProductById,
-    calculateTotalPrice,
+const { createError } = require("../middlewares/error.js");
+const { 
+    calculateTotalPrice, 
     formatMoney,
-    formatCartSubtotal,
-    formatCartTotalPrice,
-    formatCart,
+    formatCart } = require("../helpers/priceFormatting.js");
+const {
+    findOrCreateUserCartLean,
+    findOrCreateUserCart,
     updateCartWithItem,
     updateCartItemQuantity
-} = require("../helpers/cartHelper.js");
+} = require("../helpers/cartManagement.js");
 
 
 /* ===== Cart Features ===== */
-
 module.exports.getUserCart = async (req, res, next) => {
     try {
-        const userCart = await findUserCartLean(req.user.id);
+        const userCart = await findOrCreateUserCartLean(req.user.id);
         if (!userCart) {
             throw createError(404, "User's cart not found.");
         }
@@ -43,9 +41,9 @@ module.exports.addToCart = async (req, res, next) => {
             throw createError(400, "Invalid input data. Please provide a valid productId and a positive quantity.");
         }
         
-        let cart = await findUserCart(req.user.id);
-        const product = await getProductById(productId);
-        
+        let cart = await findOrCreateUserCart(req.user.id);
+        const product = await Product.findById(productId).lean();
+
         if (!product) {
             throw createError(404, "Product not found.");
         }
@@ -65,7 +63,7 @@ module.exports.addToCart = async (req, res, next) => {
 module.exports.updateProductQuantity = async (req, res, next) => {
     try {
         const { productId, quantity } = req.body;
-        const cart = await findUserCart(req.user.id);
+        const cart = await findOrCreateUserCart(req.user.id);
         if (!cart) {
             throw createError(404, "Cart not found.");
         }
@@ -87,7 +85,7 @@ module.exports.removeProductFromCart = async (req, res, next) => {
         const productId = req.params.productId;
         const userId = req.user.id;
 
-        let cart = await findUserCart(userId);
+        let cart = await findOrCreateUserCart(userId);
 
         const productIndex = cart.cartItems.findIndex(item => item.productId.equals(productId));
 
@@ -136,7 +134,7 @@ module.exports.searchByName = async (req, res, next) => {
             throw createError(404, "Product not found with the given name.");
         }
 
-        const cart = await findUserCartLean(req.user.id);
+        const cart = await findOrCreateUserCartLean(req.user.id);
         if (!cart) {
             throw createError(404, "Cart not found for the user.");
         }
@@ -172,7 +170,7 @@ module.exports.searchByPrice = async (req, res, next) => {
             throw createError(404, "No products found within the specified price range.");
         }
         
-        const cart = await findUserCartLean(req.user.id);
+        const cart = await findOrCreateUserCartLean(req.user.id);
         if (!cart) {
             throw createError(404, "Cart not found for the user.");
         }

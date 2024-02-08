@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const session = require("express-session");
 const passport = require("passport");
-require("./utils/passport.js");
+require("./middlewares/passport.js");
 
 const userRoutes = require("./routes/users.js");
 const productRoutes = require("./routes/products.js");

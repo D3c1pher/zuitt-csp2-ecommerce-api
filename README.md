@@ -43,6 +43,8 @@ Product Resources:
 * Retrieve all products (Admin only) - _Revised_
 * Archive Product (Admin only)
 * Activate Product (Admin only)
+* Product search product by name
+* Product search product by price
 
 Cart Resources:
 * Cart Model Design - _Modified_
@@ -53,8 +55,8 @@ Cart Resources:
 * Change product quantities
 * Remove products from cart - _Modified_
 * Clear Cart - _Modified_
-* Search product by name - _Modified_
-* Search product by price - _Modified_
+* Cart search product by name - _Modified_ - _Addition_
+* Cart search product by price - _Modified_ - _Addition_
 
 Order Resources:
 * Order Model Design - _Modified_
@@ -82,8 +84,8 @@ Cart Resources:
 * Cart Model Design - _Base_
 * Remove products from cart - _Base_
 * Clear Cart - _Base_
-* Search product by name - _Base_
-* Search product by price - _Base_
+* Cart search product by name - _Base_
+* Cart search product by price - _Base_
 
 Order Resources:
 * Order Model Design - _Base_

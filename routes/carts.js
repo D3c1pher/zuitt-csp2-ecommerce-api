@@ -2,7 +2,7 @@
 const express = require("express");
 
 const cartController = require("../controllers/cart.js");
-const { verify } = require("../utils/auth.js");
+const { verify } = require("../middlewares/authentication.js");
 
 /* ===== Routing Component ===== */
 const router = express.Router();

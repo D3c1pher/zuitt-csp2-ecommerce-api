@@ -2,8 +2,8 @@
 const bcrypt = require("bcrypt");
 
 const User = require("../models/User.js");
-const auth = require("../utils/auth.js");
-const { createError } = require("../utils/error.js");
+const auth = require("../middlewares/authentication.js");
+const { createError } = require("../middlewares/error.js");
 
 
 /* ===== User Info Validations ===== */
