@@ -2,7 +2,8 @@ const Product = require("../models/Product.js");
 const { createError } = require("../middlewares/error.js");
 
 
-// Validation functions
+/* ===== Validation Functions ===== */
+
 const validateProductData = (name, description, price) => {
     if (!name || !description || !price || isNaN(price) || parseFloat(price) <= 0) {
         throw createError(400, "Name, description, and a valid price greater than zero are required.");
@@ -17,6 +18,7 @@ const validatePriceRange = (minPrice, maxPrice) => {
 
 
 /* ===== Product Features ===== */
+
 module.exports.createProduct = async (req, res, next) => {
     try {
         const { name, description, price } = req.body;
