@@ -1,8 +1,10 @@
 /* ===== Dependencies and Modules ===== */
 const express = require("express");
-
 const productController = require("../controllers/product.js");
-const { verify, verifyAdmin } = require("../middlewares/authentication.js");
+const { 
+    verify,
+    verifyAdmin 
+} = require("../middlewares/authentication.js");
 
 /* ===== Routing Component ===== */
 const router = express.Router();
@@ -26,5 +28,6 @@ router.put("/activate/:productId", verify, verifyAdmin, productController.activa
 router.post("/searchByName", productController.searchByName);
 
 router.post("/searchByPrice", productController.searchByPrice);
+
 
 module.exports = router;

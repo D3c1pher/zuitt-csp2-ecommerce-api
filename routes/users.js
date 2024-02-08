@@ -3,7 +3,11 @@ const express = require("express");
 const passport = require("passport");
 
 const userController = require("../controllers/user.js");
-const { verify, verifyAdmin, isLoggedIn } = require("../middlewares/authentication.js");
+const { 
+    verify, 
+    verifyAdmin, 
+    isLoggedIn 
+} = require("../middlewares/authentication.js");
 
 /* ===== Routing Component ===== */
 const router = express.Router();

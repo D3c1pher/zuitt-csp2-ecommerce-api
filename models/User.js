@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
             required: [true, 'Mobile Number is required']
         }
     },
-    { timestamps: true } // Date added and updated timestamp
+    { timestamps: true }
 );
 
 

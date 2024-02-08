@@ -1,16 +1,16 @@
-// Helper function to calculate total price
-function calculateTotalPrice(cartItems) {
-    return cartItems.reduce((total, item) => total + item.subtotal, 0);
-}
-
 // Helper function to format money values
 function formatMoney(value) {
     const formattedValue = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(value);
     return formattedValue;
 }
 
+// Helper function to calculate total price
+function calculateTotalPrice(cartItems) {
+    return cartItems.reduce((total, item) => total + item.subtotal, 0);
+}
+
 // Format money subtotal values in the cart before sending the response
-function formatCartSubtotal(cart) {
+function formatProductSubtotal(cart) {
     cart.cartItems.forEach(item => {
         item.subtotal = formatMoney(item.subtotal);
     });
@@ -18,30 +18,21 @@ function formatCartSubtotal(cart) {
 } 
 
 // Format money totalPrice values in the cart before sending the response
-function formatCartTotalPrice(cart) {
+function formatProductTotalPrice(cart) {
     cart.totalPrice = formatMoney(cart.totalPrice);
     return cart;
 }
 
 // Format money values in the cart before sending the response
 function formatCart(cart) {
-    return formatCartSubtotal(formatCartTotalPrice(cart));
+    return formatProductSubtotal(formatProductTotalPrice(cart));
 }
-
-// // Format money values in the cart before sending the response
-// function formatCart(cart) {
-//     cart.cartItems.forEach(item => {
-//         item.subtotal = formatMoney(item.subtotal);
-//     });
-//     cart.totalPrice = formatMoney(cart.totalPrice);
-//     return cart;
-// }
 
 
 module.exports = {
     calculateTotalPrice,
     formatMoney,
-    formatCartSubtotal,
-    formatCartTotalPrice,
+    formatProductSubtotal,
+    formatProductTotalPrice,
     formatCart,
 };

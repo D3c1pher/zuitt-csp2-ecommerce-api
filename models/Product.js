@@ -34,7 +34,6 @@ const productSchema = new mongoose.Schema({
     }
 });
 
-// Add pre-save hook for updating updatedOn
 productSchema.pre('save', function(next) {
     this.updatedOn = new Date();
     next();

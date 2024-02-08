@@ -27,10 +27,18 @@ const validatePassword = (password) => {
     return requirements.every(rule => rule.test(password));
 };
 
+/* ===== Product Validations ===== */
+const validatePriceRange = (minPrice, maxPrice) => 
+    !isNaN(minPrice) || !isNaN(maxPrice) || !minPrice < 0 || !maxPrice < 0 || !minPrice > maxPrice;
+
 
 module.exports = {
+    // Global Validations
     validateInputs,
+    // User Validations
     validateEmail, 
     validateMobileNo, 
-    validatePassword
+    validatePassword,
+    // Product Validations
+    validatePriceRange
 };

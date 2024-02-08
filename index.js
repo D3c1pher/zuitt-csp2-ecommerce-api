@@ -7,7 +7,7 @@ const { dbConfig } = require("./utils/config.js");
 if (require.main === module) {
     connect().then(() => {
         app.listen(dbConfig.port, () => {
-            console.log(`API is now online at ${dbConfig.host}:${dbConfig.port}`);
+            console.log(`API is now online at ${dbConfig.host}:${dbConfig.port}\n`);
         });
     }).catch(err => {
         console.error("Error in starting server:", err);
