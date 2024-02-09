@@ -36,7 +36,7 @@ app.use(passport.session());
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
 app.use("/carts", cartRoutes);
-// app.use("/orders", orderRoutes);
+app.use("/orders", orderRoutes);
 
 /*  ===== Error Handling Middleware ===== */
 app.use(errorHandler);

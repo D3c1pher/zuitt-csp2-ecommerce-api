@@ -29,7 +29,7 @@ module.exports.verify = (req, res, next) => {
 
 module.exports.verifyAdmin = (req, res, next) => {
 	if (!req.user || !req.user.isAdmin)
-		throw createError(403, "Action Forbidden");
+		throw createError(403, "Forbidden Access");
 	next();
 };
 

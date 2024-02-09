@@ -28,6 +28,24 @@ function formatCart(cart) {
     return formatProductSubtotal(formatProductTotalPrice(cart));
 }
 
+// Format money subtotal values in the order before sending the response
+function formatOrderSubtotal(order) {
+    order.productsOrdered.forEach(item => {
+        item.subtotal = formatMoney(item.subtotal);
+    });
+    return order;
+} 
+
+// Format money totalPrice values in the order before sending the response
+function formatOrderTotalPrice(order) {
+    order.totalPrice = formatMoney(order.totalPrice);
+    return order;
+}
+
+// Format money values in the order before sending the response
+function formatOrder(order) {
+    return formatOrderSubtotal(formatOrderTotalPrice(order));
+}
 
 module.exports = {
     calculateTotalPrice,
@@ -35,4 +53,7 @@ module.exports = {
     formatProductSubtotal,
     formatProductTotalPrice,
     formatCart,
+    formatOrderSubtotal,
+    formatOrderTotalPrice,
+    formatOrder
 };

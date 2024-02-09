@@ -1,4 +1,5 @@
 /* ===== Dependencies and Modules ===== */
+/* ===== Models ===== */
 const Product = require("../models/Product.js");
 /* ===== Middlewares ===== */
 const { createError } = require("../middlewares/error.js");

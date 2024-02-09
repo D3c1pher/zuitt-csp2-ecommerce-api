@@ -1,10 +1,11 @@
 /* ===== Dependencies and Modules ===== */
 const bcrypt = require("bcrypt");
+/* ===== Models ===== */
 const User = require("../models/User.js");
 /* ===== Middlewares ===== */
 const auth = require("../middlewares/authentication.js");
 const { createError } = require("../middlewares/error.js");
-/* ===== Validations ===== */  
+/* ===== Validations ===== */
 const { 
     validateInputs, 
     validateEmail, 
