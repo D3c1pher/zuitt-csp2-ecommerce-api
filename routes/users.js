@@ -13,14 +13,31 @@ const router = express.Router();
 
 
 /* ===== User Routes ===== */
+// Registration
 router.post("/", userController.registerUser);
 
+router.get('/confirmation/:email/:token', userController.confirmEmail);
+
+router.post('/resend', userController.resendLink);
+
+
+// Login and Logout
 router.post("/login", userController.loginUser);
 
-router.post("/details", verify, userController.getUserDetails);
+router.post("/logout", userController.logoutUser);
 
+
+// View User Profile
+router.get("/details", verify, userController.getUserDetails);
+
+
+// Update User Password
 router.put('/update-password', verify, userController.updatePassword);
 
+router.get('/confirm-password-change/:token', userController.confirmPasswordChange);
+
+
+// Update User Info
 router.put('/:userId/set-as-admin', verify, verifyAdmin, userController.updateUserToAdmin);
 
 
