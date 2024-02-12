@@ -32,6 +32,16 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Password is required']
         },
+        newPassword: {
+            type: String
+        },
+        passwordResetToken: {
+            type: String
+        },
+        isVerified: {
+            type: Boolean, 
+            default: false 
+        },
         isAdmin: {
             type: Boolean,
             default: false
