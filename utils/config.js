@@ -7,9 +7,9 @@ const mongoURI = process.env.MONGODB_URI || "mongodb+srv://admin:admin123@capsto
 const dbConfig = {
     host: process.env.DB_HOST || "localhost",
     port: process.env.DB_PORT || 4000,
-    database: process.env.DB_NAME || "ecommerce-API",
-    user: process.env.DB_USER || "admin",
-    password: process.env.DB_PASSWORD || "admin123"
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD
 };
 
 const jwtConfig = {
