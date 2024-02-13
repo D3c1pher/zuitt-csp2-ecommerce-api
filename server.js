@@ -5,7 +5,7 @@ const session = require("express-session");
 const passport = require("passport");
 require("./middlewares/passport.js");
 const { errorHandler } = require("./middlewares/error.js");
-const { oAuthConfig } = require("./config.js");
+const { oAuthConfig } = require("./utils/config.js");
 
 /* ===== Routes ===== */
 const userRoutes = require("./routes/users.js");
