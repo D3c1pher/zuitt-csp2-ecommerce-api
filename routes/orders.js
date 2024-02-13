@@ -3,7 +3,8 @@ const express = require("express");
 const orderController = require("../controllers/order.js");
 const { 
     verify, 
-    verifyAdmin
+    verifyAdmin,
+    verifyCustomer
 } = require("../middlewares/authentication.js");
 
 /* ===== Routing Component ===== */
@@ -11,10 +12,13 @@ const router = express.Router();
 
 
 /* ===== Order Routes ===== */
-router.post("/checkout", verify, orderController.checkoutOrder);
+// Checkout Order
+router.post("/checkout", verify, verifyCustomer, orderController.checkoutOrder);
 
-router.get("/my-orders", verify, orderController.getMyOrders);
+// View User Order History
+router.get("/my-orders", verify, verifyCustomer, orderController.getMyOrders);
 
+// View All Orders
 router.get("/all-orders", verify, verifyAdmin, orderController.getAllOrders);
 
 

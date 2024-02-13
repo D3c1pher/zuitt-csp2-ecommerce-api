@@ -1,22 +1,24 @@
 /* ===== Dependencies and Modules ===== */
 const express = require("express");
 const cartController = require("../controllers/cart.js");
-const { verify } = require("../middlewares/authentication.js");
+const { verify, verifyCustomer } = require("../middlewares/authentication.js");
 
 /* ===== Routing Component ===== */
 const router = express.Router();
 
 
 /* ===== Cart Routes ===== */
-router.get("/", verify, cartController.getUserCart);
+// View User Cart
+router.get("/", verify, verifyCustomer, cartController.getUserCart);
 
-router.put("/addToCart", verify, cartController.addToCart);
+// User's Cart Functionality
+router.put("/addToCart", verify, verifyCustomer, cartController.addToCart);
 
-router.put("/updateQuantity", verify, cartController.updateProductQuantity);
+router.put("/updateQuantity", verify, verifyCustomer, cartController.updateProductQuantity);
 
-router.delete("/:productId/removeFromCart", verify, cartController.removeProductFromCart);
+router.delete("/:productId/removeFromCart", verify, verifyCustomer, cartController.removeProductFromCart);
 
-router.delete("/clearCart", verify, cartController.clearCartItems);
+router.delete("/clearCart", verify, verifyCustomer, cartController.clearCartItems);
 
 
 module.exports = router;
