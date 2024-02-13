@@ -34,10 +34,10 @@ app.use(passport.session());
 
 /* ===== Backend Routes ===== */
 // http://localhost:4000/
-app.use("/users", userRoutes);
-app.use("/products", productRoutes);
-app.use("/carts", cartRoutes);
-app.use("/orders", orderRoutes);
+app.use("/b3/users", userRoutes);
+app.use("/b3/products", productRoutes);
+app.use("/b3/carts", cartRoutes);
+app.use("/b3/orders", orderRoutes);
 
 /*  ===== Error Handling Middleware ===== */
 app.use(errorHandler);

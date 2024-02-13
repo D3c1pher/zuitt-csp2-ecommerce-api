@@ -6,10 +6,10 @@ const mongoURI = process.env.MONGODB_URI || `mongodb+srv://${user}:${password}@c
 
 const dbConfig = {
     host: process.env.DB_HOST || "localhost",
-    port: process.env.DB_PORT || 4000,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD
+    port: process.env.DB_PORT || 4003,
+    database: process.env.DB_NAME || "ecommerce-API",
+    user: process.env.DB_USER || "admin",
+    password: process.env.DB_PASSWORD || "admin123"
 };
 
 const jwtConfig = {
@@ -20,7 +20,7 @@ const jwtConfig = {
 const oAuthConfig = {
     clientID: process.env.OAUTH_CLIENT_ID,
     clientSecret: process.env.OAUTH_CLIENT_SECRET,
-    callbackURL: "http://localhost:4000/users/google/callback"
+    callbackURL: "http://localhost:4003/users/google/callback"
 }
 
 module.exports = { mongoURI, dbConfig, jwtConfig, oAuthConfig };
