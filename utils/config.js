@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 /* ===== Environment Setup ===== */
-const mongoURI = process.env.MONGODB_URI || "mongodb+srv://admin:admin123@capstone-2.s3zi0zl.mongodb.net/ecommerce-API?retryWrites=true&w=majority"
+const mongoURI = process.env.MONGODB_URI || `mongodb+srv://${user}:${password}@capstone-2.s3zi0zl.mongodb.net/${database}?retryWrites=true&w=majority`
 
 const dbConfig = {
     host: process.env.DB_HOST || "localhost",
@@ -17,4 +17,10 @@ const jwtConfig = {
     expiration: process.env.JWT_EXPIRATION || "1h"
 };
 
-module.exports = { mongoURI, dbConfig, jwtConfig };
+const oAuthConfig = {
+    clientID: process.env.OAUTH_CLIENT_ID,
+    clientSecret: process.env.OAUTH_CLIENT_SECRET,
+    callbackURL: "http://localhost:4000/users/google/callback"
+}
+
+module.exports = { mongoURI, dbConfig, jwtConfig, oAuthConfig };
