@@ -36,7 +36,13 @@ module.exports.verify = (req, res, next) => {
 
 module.exports.verifyAdmin = (req, res, next) => {
 	if (!req.user || !req.user.isAdmin)
-		throw createError(403, "Forbidden Access!");
+		throw createError(403, "Forbidden Action!");
+	next();
+};
+
+module.exports.verifyCustomer = (req, res, next) => {
+	if (!req.user || req.user.isAdmin)
+		throw createError(403, "Forbidden Action!");
 	next();
 };
 
