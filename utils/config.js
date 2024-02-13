@@ -21,6 +21,6 @@ const oAuthConfig = {
     callbackURL: "http://localhost:4003/users/google/callback"
 }
 
-const mongoURI = process.env.MONGODB_URI || `mongodb+srv://${user}:${password}@capstone-2.s3zi0zl.mongodb.net/${database}?retryWrites=true&w=majority`
+const mongoURI = process.env.MONGODB_URI || "MONGODB_URI=mongodb+srv://admin:admin123@capstone-2.s3zi0zl.mongodb.net/ecommerce-API?retryWrites=true&w=majority"
 
 module.exports = { mongoURI, dbConfig, jwtConfig, oAuthConfig };
