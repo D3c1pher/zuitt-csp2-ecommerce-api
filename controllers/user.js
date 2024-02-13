@@ -207,6 +207,50 @@ module.exports.getUserDetails = async (req, res, next) => {
     }
 };
 
+module.exports.updateUserProfile = async (req, res, next) => {
+    try {
+        const { firstName, lastName, username, email, mobileNo } = req.body;
+        const userId = req.user.id;
+
+        if (!validateInputs(firstName, lastName, username, email, mobileNo))
+            throw createError(400, "All fields are required!");
+
+        if (!validateEmail(email))
+            throw createError(400, "Email is invalid!");
+
+        if (!validateMobileNo(mobileNo))
+            throw createError(400, "Mobile Number is invalid!");
+
+        const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    
+        if (existingUser) {
+            const field = existingUser.email === email ? "Email" : "Username";
+            throw createError(409, `${field} already exists!`);
+        }
+        
+        const updatedFields = {
+            firstName,
+            lastName,
+            username,
+            email,
+            mobileNo
+        };
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, { new: true });
+
+        if (!updatedUser)
+            throw createError(404, "User does not exist.");
+
+        return res.status(200).send({
+            message: "User profile updated successfully.",
+            updatedUser: updatedUser 
+        });
+    } catch (err) {
+        console.error("Error in updating user profile: ", err);
+        return next(err);
+    }
+};
+
 /* ========== ========== */
 
 module.exports.updatePassword = async (req, res, next) => {
@@ -302,6 +346,29 @@ module.exports.updateUserToAdmin = async (req, res, next) => {
 		res.status(200).json({ message: "User updated to admin successfully." });
     } catch (err) {
         console.error("Error in updating user to admin: ", err);
+        return next(err);
+    }
+};
+
+/* ========== ========== */
+
+module.exports.searchUsers = async (req, res, next) => {
+    try {
+        const { searchTerm } = req.body;
+        const users = await User.find(
+            {
+                $or: [
+                    { firstName: { $regex: searchTerm, $options: 'i' } }, 
+                    { lastName: { $regex: searchTerm, $options: 'i' } },  
+                    { email: { $regex: searchTerm, $options: 'i' } },  
+                ]
+            },
+            { password: 0 }
+        );
+        
+        return res.status(200).send({ userSearchResults: users });
+    } catch (err) {
+        console.error("Error in user search: ", err);
         return next(err);
     }
 };

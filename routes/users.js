@@ -27,8 +27,10 @@ router.post("/login", userController.loginUser);
 router.post("/logout", userController.logoutUser);
 
 
-// View User Profile
+// Customer User Features
 router.get("/details", verify, userController.getUserDetails);
+
+router.put("/update-details", verify, userController.updateUserProfile);
 
 
 // Update User Password
@@ -37,8 +39,12 @@ router.put('/update-password', verify, userController.updatePassword);
 router.get('/confirm-password-change/:token', userController.confirmPasswordChange);
 
 
-// Update User Info
+// Admin User Features
 router.put('/:userId/set-as-admin', verify, verifyAdmin, userController.updateUserToAdmin);
+
+
+// User Search Functionality
+router.post('/search-users', userController.searchUsers);
 
 /* ========== ========== */
 
