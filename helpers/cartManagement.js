@@ -1,8 +1,6 @@
 /* ===== Dependencies and Modules ===== */
-/* ===== Models ===== */
 const Cart = require("../models/Cart.js");
 const Product = require("../models/Product.js");
-/* ===== Helpers ===== */
 const { calculateTotalPrice } = require("./priceFormatting.js");
 
 
