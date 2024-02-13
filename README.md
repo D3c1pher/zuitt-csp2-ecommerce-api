@@ -70,8 +70,8 @@ Stretch Goals:
 
 Additional Functionalities:
 * User Logout Feature
-* Verify Customer Check
-* resend confirmation email
+* Verify Customer Authentication
+* Resend Confirmation Email
 * OAuth Google Login
 - - -
 #### Features by Shelly Noval:
