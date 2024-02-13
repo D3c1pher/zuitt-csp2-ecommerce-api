@@ -1,12 +1,13 @@
 /* ===== Dependencies and Modules ===== */
 const express = require("express");
 const cors = require("cors");
-
-const { errorHandler } = require("./middlewares/error.js");
 const session = require("express-session");
 const passport = require("passport");
 require("./middlewares/passport.js");
+const { errorHandler } = require("./middlewares/error.js");
+const { oAuthConfig } = require("./config.js");
 
+/* ===== Routes ===== */
 const userRoutes = require("./routes/users.js");
 const productRoutes = require("./routes/products.js");
 const orderRoutes = require("./routes/orders.js");
@@ -23,7 +24,7 @@ app.use(cors());
 /* ===== Google Login ===== */
 app.use(
     session({
-      secret: process.env.CLIENT_SECRET || "defaultSecret",
+      secret: oAuthConfig.clientSecret || "defaultSecret",
       resave: false,
       saveUninitialized: false,
     })
