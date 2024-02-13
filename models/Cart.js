@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const cartItemSchema = new mongoose.Schema({
     productId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -35,6 +34,5 @@ const cartSchema = new mongoose.Schema({
         default: Date.now
     }
 });
-
 
 module.exports = mongoose.model('Cart', cartSchema);

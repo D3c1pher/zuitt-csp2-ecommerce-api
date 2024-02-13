@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -38,6 +37,5 @@ productSchema.pre('save', function(next) {
     this.updatedOn = new Date();
     next();
 });
-
 
 module.exports = mongoose.model('Product', productSchema);

@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const orderSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -36,6 +35,5 @@ const orderSchema = new mongoose.Schema({
         default: 'Pending'
     }
 });
-
 
 module.exports = mongoose.model('Order', orderSchema);
