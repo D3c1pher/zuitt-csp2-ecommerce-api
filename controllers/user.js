@@ -328,6 +328,35 @@ module.exports.confirmPasswordChange = async (req, res, next) => {
     }
 };
 
+module.exports.resendPasswordChange = async (req, res, next) => {
+    try {
+        const user = await User.findOne({ email: req.user.email });
+
+        if (!user)
+            throw createError(401, "We were unable to find a user with that email. Make sure your Email is correct!");
+
+        await Token.deleteMany({ userId: user.id });
+
+        const token = new Token({ userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+        await token.save();
+
+        const mailOptions = {
+            from: 'no-reply@example.com',
+            to: user.email,
+            subject: 'Password Change Confirmation Link',
+            text: `Hello ${user.firstName}, Please confirm password change by clicking the link: http://${req.headers.host}/users/confirm-password-change/${token.token} Thank You!`
+        };
+
+        return res.status(200).send({
+            message: `Password reset request received. A confirmation email has been sent to ${req.user.email}. It will expire after one day. If you didn't receive a confirmation email, click on resend token.`,
+            mail: mailOptions
+        });
+    } catch (err) {
+        console.error("Error in resending password change link: ", err);
+        next(err);
+    }
+};
+
 /* ========== ========== */
 
 module.exports.updateUserToAdmin = async (req, res, next) => {

@@ -38,6 +38,8 @@ router.put('/update-password', verify, userController.updatePassword);
 
 router.get('/confirm-password-change/:token', userController.confirmPasswordChange);
 
+router.post('/update-password/resend', verify, userController.resendPasswordChange);
+
 
 // Admin User Features
 router.put('/:userId/set-as-admin', verify, verifyAdmin, userController.updateUserToAdmin);
