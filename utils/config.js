@@ -2,8 +2,6 @@
 require("dotenv").config();
 
 /* ===== Environment Setup ===== */
-const mongoURI = process.env.MONGODB_URI || `mongodb+srv://${user}:${password}@capstone-2.s3zi0zl.mongodb.net/${database}?retryWrites=true&w=majority`
-
 const dbConfig = {
     host: process.env.DB_HOST || "localhost",
     port: process.env.DB_PORT || 4003,
@@ -22,5 +20,7 @@ const oAuthConfig = {
     clientSecret: process.env.OAUTH_CLIENT_SECRET,
     callbackURL: "http://localhost:4003/users/google/callback"
 }
+
+const mongoURI = process.env.MONGODB_URI || `mongodb+srv://${user}:${password}@capstone-2.s3zi0zl.mongodb.net/${database}?retryWrites=true&w=majority`
 
 module.exports = { mongoURI, dbConfig, jwtConfig, oAuthConfig };
