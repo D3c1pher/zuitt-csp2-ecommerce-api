@@ -43,8 +43,6 @@ Product Resources:
 * Retrieve all products (Admin only) - _Revised_
 * Archive Product (Admin only)
 * Activate Product (Admin only)
-* Search product by name
-* Search product by price
 
 Cart Resources:
 * Cart Model Design - _Modified_
@@ -58,12 +56,23 @@ Cart Resources:
 
 Order Resources:
 * Order Model Design - _Modified_
-* ...
+* Non-admin User checkout (Create Order) _Modified_
+* Retrieve all orders (Admin only) _Modified_
+* Retrieve authenticated user's orders _Modified_
 
-Additional Resources:
-* Error Handler and Middleware - ./utils/error.js
-* Validation functionalities for user features - ./helper/userHelper.js
-* Helper functionalities for cart features - ./helpers/cartHelper.js
+Search Functionalities:
+* Search product by name
+* Search product by price
+
+Stretch Goals:
+* Update password with Email Confirmation/Notification
+* Registration with Email Confirmation/Notification
+
+Additional Functionalities:
+* User Logout Feature
+* Verify Customer Check
+* resend confirmation email
+* OAuth Google Login
 - - -
 #### Features by Shelly Noval:
 
@@ -85,7 +94,7 @@ Cart Resources:
 
 Order Resources:
 * Order Model Design - _Base_
-* Non-admin User checkout (Create Order)
-* Retrieve all orders (Admin only)
-* Retrieve authenticated user's orders
+* Non-admin User checkout (Create Order) _Base_
+* Retrieve all orders (Admin only) _Base_
+* Retrieve authenticated user's orders _Base_
 - - -
