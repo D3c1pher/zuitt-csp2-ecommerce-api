@@ -69,10 +69,13 @@ Stretch Goals:
 * Registration with Email Confirmation/Notification
 
 Additional Functionalities:
+* Verify Customer Authentication 
 * User Logout Feature
-* Verify Customer Authentication
-* Resend Confirmation Email
 * OAuth Google Login
+* Resend Confirmation Email
+* Resend Password Change Email
+* User Update Profile
+* User Search Functionality
 - - -
 #### Features by Shelly Noval:
 
