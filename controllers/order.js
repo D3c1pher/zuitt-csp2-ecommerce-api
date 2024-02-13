@@ -3,7 +3,6 @@ const Cart = require("../models/Cart.js");
 const Order = require("../models/Order.js");
 const { createError } = require("../middlewares/error.js");
 const { formatOrder } = require("../helpers/priceFormatting.js");
-const { validateInputs } = require("../middlewares/validations.js");
 
 
 /* ===== Order Features ===== */
