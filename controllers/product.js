@@ -1,11 +1,7 @@
 /* ===== Dependencies and Modules ===== */
-/* ===== Models ===== */
 const Product = require("../models/Product.js");
-/* ===== Middlewares ===== */
 const { createError } = require("../middlewares/error.js");
-/* ===== Helpers ===== */
 const { formatMoney } = require("../helpers/priceFormatting.js");
-/* ===== Validations ===== */
 const {
     validateInputs,
     validatePriceRange
@@ -46,6 +42,8 @@ module.exports.createProduct = async (req, res, next) => {
         return next(err);
     }
 };
+
+/* ========== ========== */
 
 module.exports.getAllProducts = async (req, res, next) => {
     try {
@@ -107,6 +105,8 @@ module.exports.getProduct = async (req, res, next) => {
         return next(err);
     }
 };
+
+/* ========== ========== */
 
 module.exports.updateProductInfo = async (req, res, next) => {
     try {
@@ -203,6 +203,8 @@ module.exports.activateProduct = async (req, res, next) => {
         return next(err);
     }
 };
+
+/* ========== ========== */
 
 module.exports.searchByName = async (req, res, next) => {
     try {

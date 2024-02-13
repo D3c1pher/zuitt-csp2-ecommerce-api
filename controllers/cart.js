@@ -1,10 +1,8 @@
 /* ===== Dependencies and Modules ===== */
-/* ===== Models ===== */
 const Cart = require("../models/Cart.js");
 const Product = require("../models/Product.js");
-/* ===== Middlewares ===== */
 const { createError } = require("../middlewares/error.js");
-/* ===== Helpers ===== */
+const { validateInputs } = require("../middlewares/validations.js");
 const { 
     calculateTotalPrice,
     formatCart 
@@ -15,8 +13,6 @@ const {
     updateCartWithItem,
     updateCartItemQuantity
 } = require("../helpers/cartManagement.js");
-/* ===== Validations ===== */
-const { validateInputs } = require("../middlewares/validations.js");
 
 
 /* ===== Cart Features ===== */

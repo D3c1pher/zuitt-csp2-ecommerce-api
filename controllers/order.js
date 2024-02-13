@@ -1,15 +1,8 @@
 /* ===== Dependencies and Modules ===== */
-/* ===== Models ===== */
 const Cart = require("../models/Cart.js");
 const Order = require("../models/Order.js");
-// /* ===== Middlewares ===== */
 const { createError } = require("../middlewares/error.js");
-// /* ===== Helpers ===== */
-const { 
-    formatMoney, 
-    formatOrder 
-} = require("../helpers/priceFormatting.js");
-// /* ===== Validations ===== */
+const { formatOrder } = require("../helpers/priceFormatting.js");
 const { validateInputs } = require("../middlewares/validations.js");
 
 
@@ -17,11 +10,6 @@ const { validateInputs } = require("../middlewares/validations.js");
 module.exports.checkoutOrder = async (req, res, next) => {
     try {
         const userId = req.user.id;
-        const isAdmin = req.user.isAdmin;
-
-        if (isAdmin) {
-            throw createError(403, "Admin users are not allowed to checkout orders.");
-        }
 
         const cart = await Cart.findOne({ userId }).lean();
 
@@ -72,6 +60,8 @@ module.exports.getMyOrders = async (req, res, next) => {
         return next(err);
     }
 };
+
+/* ========== ========== */
 
 module.exports.getAllOrders = async (req, res, next) => {
     try {

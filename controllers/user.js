@@ -214,7 +214,7 @@ module.exports.updatePassword = async (req, res, next) => {
         const { newPassword, confirmPassword } = req.body;
         const { id } = req.user;
 
-        if (!newPassword || !confirmPassword)
+        if (!validateInputs(newPassword, confirmPassword))
             throw createError(400, "New password and confirm password are required.");
 
         if (newPassword !== confirmPassword)
@@ -223,10 +223,23 @@ module.exports.updatePassword = async (req, res, next) => {
         if (!validatePassword(newPassword))
             throw createError(400, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
 
+        const user = await User.findById(id);
+
+        const isSamePassword = await bcrypt.compare(newPassword, user.password);
+
+        if (isSamePassword)
+            throw createError(400, "New password cannot be the same as the old password.");
+
+        await Token.deleteMany({ userId: id });
+
         const token = new Token({ userId: id, token: crypto.randomBytes(16).toString('hex') });
         await token.save();
 
-        await User.findByIdAndUpdate(id, { newPassword, passwordResetToken: token.token });
+        const hashedNewPassword = await bcrypt.hash(newPassword, bcrypt.genSaltSync(10));
+
+        await User.findByIdAndUpdate(id, { 
+            newPassword: hashedNewPassword, 
+            passwordResetToken: token.token });
 
         const mailOptions = {
             from: 'no-reply@example.com',
@@ -239,7 +252,7 @@ module.exports.updatePassword = async (req, res, next) => {
             message: `Password reset request received. A confirmation email has been sent to ${req.user.email}. It will expire after one day. If you didn't receive a confirmation email, click on resend token.`,
             mail: mailOptions
         });
-	} catch (error) {
+	} catch (err) {
 		console.error("Error in updating password: ", err);
 		return next(err);
 	}
@@ -257,8 +270,7 @@ module.exports.confirmPasswordChange = async (req, res, next) => {
         if (!user)
             throw createError(400, "Invalid or expired token.");
 
-        const hashedPassword = await bcrypt.hash(user.newPassword, bcrypt.genSaltSync(10));
-        user.password = hashedPassword;
+        user.password = user.newPassword;
         user.newPassword = undefined;
         user.passwordResetToken = undefined;
         await user.save();
