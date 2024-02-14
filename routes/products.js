@@ -16,7 +16,7 @@ router.post("/", verify, verifyAdmin, productController.createProduct);
 
 
 // View Products
-router.get("/all", productController.getAllProducts);
+router.get("/all", verifyAdmin, productController.getAllProducts);
 
 router.get("/active", productController.getAllActive);
 
