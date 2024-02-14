@@ -14,17 +14,14 @@
 | ------ | ------ | 
 | **email:** | admin@email.com |
 | **password:** | Admin123* |
-| ------ | ------ | 
-| **email:** | testadmin@email.com |
-| **password:** | testAdmin123* |
 * #### Dummy Customer:
 | User | Info | 
 | ------ | ------ | 
-| **email:** | customer@mail.com |
+| **email:** | customer@email.com |
 | **password:** | Customer123* |
 | ------ | ------ | 
-| **email:** | testcustomer@email.com |
-| **password:** | testCustomer123* |
+| **email:** | test@email.com |
+| **password:** | Password123* |
 - - -
 ### **Features:**
 - - -
