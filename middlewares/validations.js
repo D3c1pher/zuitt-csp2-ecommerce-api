@@ -53,8 +53,8 @@ function registerValidation(data) {
 function loginValidation(data) {
     const errors = [];
 
-    if (!data.username && !data.email) {
-        errors.push("Username or email is required");
+    if (!data.emailOrUsername) {
+        errors.push("Email or username is required");
     } else if (!data.password) {
         errors.push("Password is required");
     }

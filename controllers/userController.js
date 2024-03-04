@@ -28,7 +28,7 @@ module.exports.register = async (req, res, next) => {
         if (validationErrors.length > 0) {
             throw errorInfo(400, validationErrors);
         }
-
+        
         // Check if the user already exists
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
         if (existingUser) {
@@ -66,16 +66,16 @@ module.exports.register = async (req, res, next) => {
 /* ===== Login Controller Start ===== */
 module.exports.login = async (req, res, next) => {
     try {
-        const { email, username, password } = req.body;
+        const { emailOrUsername, password } = req.body;
 
         // Validate the user input
-        const validationErrors = loginValidation({ email, username, password });
+        const validationErrors = loginValidation({ emailOrUsername, password });
         if (validationErrors.length > 0) {
             throw errorInfo(400, validationErrors);
         }
 
         // Check if the user exists with the provided email or username
-        let user = await User.findOne({ $or: [{ email }, { username }] });
+        let user = await User.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
         if (!user) {
             throw errorInfo(401, "Email or username is invalid");
         }
