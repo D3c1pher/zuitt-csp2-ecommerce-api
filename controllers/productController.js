@@ -6,7 +6,7 @@ const { errorInfo } = require("../middlewares/error.js");
 /* ========== Product Controller Features Start ========== */
 
 /* ===== Create Product Category Controller Start ===== */
-module.exports.createCategory = async (req, res, next) => {
+module.exports.addCategory = async (req, res, next) => {
     try {
         const { name } = req.body;
 

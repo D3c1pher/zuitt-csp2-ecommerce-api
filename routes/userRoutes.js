@@ -8,20 +8,20 @@ const router = express.Router();
 
 /* ========== User Routes Start ========== */
 
-router.post('/register', userController.register);
+router.post('/', userController.register);
 
 router.post('/login', userController.login);
 
 /* ========== ========== ========== */
 
-router.get('/profile', verify, userController.viewProfile);
+router.get('/details', verify, userController.viewProfile);
 
-router.put('/profile', verify, userController.updateProfile);
+router.put('/details', verify, userController.updateProfile);
 
 // STRETCH GOAL:
 // router.put('/profile/change-picture', verify, userController.changeProfilePicture);
 
-router.put('/profile/change-password', verify, userController.changePassword);
+router.put('/profile/update-password', verify, userController.changePassword);
 
 // STRETCH GOAL:
 // router.put('/reset-password', userController.resetPassword);

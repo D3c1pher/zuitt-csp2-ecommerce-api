@@ -11,9 +11,9 @@ const router = express.Router();
 
 /* ========== Product Routes Start ========== */
 
-router.post('/create-category', verify, verifyAdmin, productController.createCategory);
+router.post('/add-category', verify, verifyAdmin, productController.addCategory);
 
-router.post("/add", verify, verifyAdmin, productController.addProduct);
+router.post("/", verify, verifyAdmin, productController.addProduct);
 
 router.delete("/permanent-delete/:productId", verify, verifyAdmin, productController.deleteProduct);
 
@@ -21,9 +21,9 @@ router.put("/:productId", verify, verifyAdmin, productController.updateProduct);
 
 /* ========== ========== ========== */
 
-router.get("/admin-view", verify, verifyAdmin, productController.viewAllProducts);
+router.get("/all", verify, verifyAdmin, productController.viewAllProducts);
 
-router.get("/", productController.viewAvailableProducts);
+router.get("/active", productController.viewAvailableProducts);
 
 router.get("/:productId", productController.viewProduct);
 
