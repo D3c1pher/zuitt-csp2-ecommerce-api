@@ -2,53 +2,68 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
     {
-        firstName: {
+        firstname: {
             type: String,
-            required: [true, 'First Name is required'],
-            trim: true
+            required: true, 
+            trim: true,
         },
-        lastName: {
+        lastname: {
             type: String,
-            required: [true, 'Last Name is required'],
-            trim: true
+            required: true, 
+            trim: true,
         },
         username: {
             type: String,
-            required: [true, 'Username is required'],
+            required: true, 
             unique: true,
             trim: true,
-            minlength: [3, 'Username must be at least 3 characters long'],
-            maxlength: [20, 'Username cannot be longer than 20 characters']
+            minlength: 3,
+            maxlength: 20, 
         },
         email: {
             type: String,
-            required: [true, 'Email is required'],
+            required: true, 
             unique: true,
             trim: true,
-            lowercase: true
+            lowercase: true,
         },
         password: {
             type: String,
-            required: [true, 'Password is required']
-        },
-        newPassword: {
-            type: String
-        },
-        passwordResetToken: {
-            type: String
-        },
-        isVerified: {
-            type: Boolean, 
-            default: false 
-        },
-        isAdmin: {
-            type: Boolean,
-            default: false
+            required: true,
         },
         mobileNo: {
             type: String,
-            required: [true, 'Mobile Number is required']
-        }
+            required: true, 
+        },
+        address: {
+            type: String,
+            required: true,
+        },
+        birthdate: {
+            type: Date,
+            required: true, 
+        },
+        profileImage: {
+            type: String,
+        },
+        isBlocked: {
+            type: Boolean, 
+            default: false, 
+        },
+        isAdmin: {
+            type: Boolean,
+            default: false,
+        },
+        isActive: {
+            type: Boolean, 
+            default: true, 
+        },
+        // newPassword: {
+        //     type: String,
+        // },
+        // passwordResetToken: {
+        //     type: String,
+        // },
     },
     { timestamps: true }
 );

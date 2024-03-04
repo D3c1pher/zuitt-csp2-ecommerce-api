@@ -3,25 +3,59 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Name is required'],
+        required: true,
         trim: true,
-        minlength: [2, 'Name must be at least 2 characters long'],
-        maxlength: [100, 'Name cannot exceed 100 characters']
+        minlength: 2, 
+        maxlength: 100,
     },
     description: {
         type: String,
-        required: [true, 'Description is required'],
-        minlength: [10, 'Description must be at least 10 characters long']
+        required: true, 
+        minlength: 10,
     },
+    specs: {
+        type: [String],
+        required: false,
+    },
+    details: {
+        type: [String],
+        required: false,
+    },
+    compatibility: {
+        type: [String],
+        required: false,
+    },
+    inTheBox: {
+        type: [String],
+        required: false,
+    },
+    images: [{
+        type: String,
+        required: false,
+    }],
     price: {
         type: Number,
-        required: [true, 'Price is required'],
-        min: [0, 'Price must be non-negative']
+        required: true, 
+        min: 0, 
+    },
+    discount: {
+        type: Number,
+        min: 0,
+        max: 100,
+        default: 0
+    },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
     },
     isActive: {
         type: Boolean,
         default: true
     },
+    reviews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review'
+    }],
     createdOn: {
         type: Date,
         default: Date.now,
@@ -35,6 +69,15 @@ const productSchema = new mongoose.Schema({
 
 productSchema.pre('save', function(next) {
     this.updatedOn = new Date();
+    next();
+});
+
+// Calculate the discounted price before saving
+productSchema.pre('save', function(next) {
+    if (this.isModified('discount')) {
+        const discountedPrice = this.price * (1 - this.discount / 100);
+        this.price = discountedPrice;
+    }
     next();
 });
 

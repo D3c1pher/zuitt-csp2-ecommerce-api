@@ -11,6 +11,7 @@ const connect = async () => {
         throw err;
     }
 };
+
 mongoose.connection.once("open", () => console.log("\nNow connected to MongoDB Atlas"));
 
 module.exports = { connect };

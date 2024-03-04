@@ -1,4 +1,4 @@
-module.exports.createError = (status, message) => {
+module.exports.errorInfo = (status, message) => {
     const err = new Error();
     err.status = status;
     err.message = message;
