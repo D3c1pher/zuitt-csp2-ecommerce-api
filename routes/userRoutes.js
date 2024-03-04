@@ -21,7 +21,7 @@ router.put('/details', verify, userController.updateProfile);
 // STRETCH GOAL:
 // router.put('/profile/change-picture', verify, userController.changeProfilePicture);
 
-router.put('/profile/update-password', verify, userController.changePassword);
+router.put('/update-password', verify, userController.changePassword);
 
 // STRETCH GOAL:
 // router.put('/reset-password', userController.resetPassword);
