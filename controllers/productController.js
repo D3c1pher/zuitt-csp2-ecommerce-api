@@ -68,6 +68,8 @@ module.exports.addProduct = async (req, res, next) => {
         if (req.body.inTheBox) productData.inTheBox = req.body.inTheBox;
         if (req.body.images) productData.images = req.body.images;
         if (req.body.discount) productData.discount = req.body.discount;
+        if (req.body.isActive) productData.isActive = req.body.isActive;
+        if (req.body.isFeatured) productData.isFeatured = req.body.isFeatured;
 
         // Save the product
         const product = new Product(productData);
@@ -143,14 +145,20 @@ module.exports.updateProduct = async (req, res, next) => {
 
         // Check each field in the request body and add it to updatedFields if provided
         if (productData.description) updatedFields.description = productData.description;
-        if (productData.price) updatedFields.price = productData.price;
         if (productData.category) updatedFields.category = productData.category;
+        if (productData.price) updatedFields.price = productData.price;
+        if (productData.discount) updatedFields.discount = productData.discount;
         if (Array.isArray(productData.specs)) updatedFields.specs = productData.specs;
         if (Array.isArray(productData.details)) updatedFields.details = productData.details;
         if (Array.isArray(productData.compatibility)) updatedFields.compatibility = productData.compatibility;
         if (Array.isArray(productData.inTheBox)) updatedFields.inTheBox = productData.inTheBox;
         if (Array.isArray(productData.images)) updatedFields.images = productData.images;
-        if (productData.discount) updatedFields.discount = productData.discount;
+        if (productData.hasOwnProperty('isActive') && productData.isActive !== undefined) {
+            updatedFields.isActive = productData.isActive;
+        }
+        if (productData.hasOwnProperty('isFeatured') && productData.isFeatured !== undefined) {
+            updatedFields.isFeatured = productData.isFeatured;
+        }
 
         // Check if the price is provided and valid
         if (updatedFields.price && (typeof updatedFields.price !== 'number' || updatedFields.price <= 0)) {
@@ -191,7 +199,10 @@ module.exports.updateProduct = async (req, res, next) => {
 /* ===== View All Product Controller Start ===== */
 module.exports.viewAllProducts = async (req, res, next) => {
     try {
-        const products = await Product.find();
+        const products = await Product.find().populate({
+            path: 'category',
+            select: 'name'
+        });
 
         if (products.length === 0) {
             return res.status(200).json({ message: "No products found" });
@@ -208,7 +219,10 @@ module.exports.viewAllProducts = async (req, res, next) => {
 /* ===== View Available Product Controller Start ===== */
 module.exports.viewAvailableProducts = async (req, res, next) => {
     try{
-        const products = await Product.find({ isActive: true });
+        const products = await Product.find({ isActive: true }).populate({
+            path: 'category',
+            select: 'name'
+        });
 
         if (products.length === 0) {
             return res.status(200).json({ message: "No available products found" });
@@ -226,22 +240,26 @@ module.exports.viewAvailableProducts = async (req, res, next) => {
 module.exports.viewProduct = async (req, res, next) => {
     try {
         const productId = req.params.productId;
-        const product = await Product.findById(productId);
+        const product = await Product.findById(productId).populate({
+            path: 'category',
+            select: 'name'
+        });
 
         if (!product) {
             throw errorInfo(404, "Product not found");
         }
 
-        const isAdmin = req.user && req.user.isAdmin;
-        const isActiveProduct = product.isActive;
+        // const isAdmin = req.user && req.user.isAdmin;
+        // const isActiveProduct = product.isActive;
 
-        // Check if the user is an admin or if the product is active
-        if (isAdmin || (isActiveProduct && !req.user)) {
-            // Admin can view any product or customer can view active products
-            res.status(200).json({ product });
-        } else {
-            throw errorInfo(404, "Product not found or inactive");
-        }
+        // // Check if the user is an admin or if the product is active
+        // if (isAdmin || (isActiveProduct && !req.user)) {
+        //     // Admin can view any product or customer can view active products
+        //     res.status(200).json({ product });
+        // } else {
+        //     throw errorInfo(404, "Product not found or inactive");
+        // }
+        res.status(200).json({ product });
     } catch (err) {
         console.error("Error in viewing product: ", err);
         next(err);

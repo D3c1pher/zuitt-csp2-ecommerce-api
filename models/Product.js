@@ -13,21 +13,9 @@ const productSchema = new mongoose.Schema({
         required: true, 
         minlength: 10,
     },
-    specs: {
-        type: [String],
-        required: false,
-    },
-    details: {
-        type: [String],
-        required: false,
-    },
-    compatibility: {
-        type: [String],
-        required: false,
-    },
-    inTheBox: {
-        type: [String],
-        required: false,
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
     },
     images: [{
         type: String,
@@ -44,13 +32,29 @@ const productSchema = new mongoose.Schema({
         max: 100,
         default: 0
     },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category'
-    },
+    // specs: {
+    //     type: [String],
+    //     required: false,
+    // },
+    // details: {
+    //     type: [String],
+    //     required: false,
+    // },
+    // compatibility: {
+    //     type: [String],
+    //     required: false,
+    // },
+    // inTheBox: {
+    //     type: [String],
+    //     required: false,
+    // },
     isActive: {
         type: Boolean,
-        default: true
+        default: false
+    },
+    isFeatured: {
+        type: Boolean,
+        default: false
     },
     reviews: [{
         type: mongoose.Schema.Types.ObjectId,
