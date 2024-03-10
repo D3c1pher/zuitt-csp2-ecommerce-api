@@ -8,11 +8,15 @@ const { errorInfo } = require("../middlewares/error.js");
 /* ===== Checkout Order Controller Start ===== */
 module.exports.checkout = async (req, res, next) => {
     try {
-        const userId = req.user._id;
+        const userId = req.user.id;
         const cart = await Cart.findOne({ userId }).populate('cartItems.productId');
 
         if (!cart) {
-            throw errorInfo(404, "Cart not found");
+            throw errorInfo(404, "Cart is empty");
+        }
+
+        if (cart.cartItems.length === 0) {
+            throw errorInfo(400, "Cart is empty");
         }
 
         let totalPrice = 0;
@@ -49,7 +53,10 @@ module.exports.checkout = async (req, res, next) => {
 module.exports.viewMyOrders = async (req, res, next) => {
     try {
         const userId = req.user.id;
-        const orders = await Order.find({ userId });
+        const orders = await Order.find({ userId }).populate({
+            path: 'productsOrdered.productId',
+            select: 'name'
+        }).lean();
 
         if (!orders || orders.length === 0) {
             throw errorInfo(404, "No orders found");
@@ -66,7 +73,10 @@ module.exports.viewMyOrders = async (req, res, next) => {
 /* ===== View All Orders Controller Start ===== */
 module.exports.viewAllOrders = async (req, res, next) => {
     try {
-        const orders = await Order.find({});
+        const orders = await Order.find({}).populate({
+            path: 'userId',
+            select: 'email'
+        }).lean();;
 
         if (!orders || orders.length === 0) {
             throw errorInfo(404, "Orders not found");

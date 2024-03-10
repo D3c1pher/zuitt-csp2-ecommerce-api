@@ -14,7 +14,7 @@ module.exports.viewCart = async (req, res, next) => {
             { userId },
             { $setOnInsert: { userId, cartItems: [] } },
             { upsert: true, new: true }
-        ).lean();
+        ).populate('cartItems.productId').lean();
 
         if (!cart || cart.cartItems.length === 0) {
             return res.status(200).json({ message: "Cart is empty" });
