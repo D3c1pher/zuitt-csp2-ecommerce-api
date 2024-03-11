@@ -33,7 +33,7 @@ module.exports.register = async (req, res, next) => {
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
         if (existingUser) {
             const field = existingUser.email === email ? "Email" : "Username";
-            throw errorInfo(409, `${field} already exists`);
+            throw errorInfo(409, `${field} already exists\n`);
         }
 
         // Hash the password
@@ -50,12 +50,9 @@ module.exports.register = async (req, res, next) => {
             address, 
             birthdate
         });
-        const savedUser = await newUser.save();
+        const user = await newUser.save();
 
-        res.status(201).json({ 
-            message: "User registered successfully",
-            user: savedUser
-        });
+        res.status(201).json({ user });
     } catch(err) {
         console.error("Error in user registration: ", err);
         next(err);

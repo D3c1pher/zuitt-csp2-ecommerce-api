@@ -7,41 +7,41 @@ function registerValidation(data) {
     for (let i = 0; i < requiredFields.length; i++) {
         const field = requiredFields[i];
         if (!data[field] || data[field].trim() === '') {
-            errors.push(`${field.charAt(0).toUpperCase() + field.slice(1)} is required`);
+            errors.push(`${field.charAt(0).toUpperCase() + field.slice(1)} is required\n`);
         }
     }
 
     if (data.password !== data.confirmPassword) {
-        errors.push("Passwords do not match");
+        errors.push("Passwords do not match\n");
     }
 
     if (data.password.length < 8) {
-        errors.push("Password must be at least 8 characters long");
+        errors.push("Password must be at least 8 characters long\n");
     }
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(data.password)) {
-        errors.push("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character");
+        errors.push("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character\n");
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {
-        errors.push("Valid email address is required");
+        errors.push("Valid email address is required\n");
     }
 
     const mobileRegex = /^[0-9]{11}$/;
     if (!mobileRegex.test(data.mobileNo)) {
-        errors.push("Valid mobile number is required");
+        errors.push("Valid mobile number is required\n");
     }
 
     if (!data.birthdate || !isValidDate(data.birthdate)) {
-        errors.push("Valid birthdate in YYYY-MM-DD format is required");
+        errors.push("Valid birthdate in YYYY-MM-DD format is required\n");
     } else {
         const birthDate = new Date(data.birthdate);
         const eighteenYearsAgo = new Date();
         eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
         if (birthDate > eighteenYearsAgo) {
-            errors.push("User must be at least 18 years old");
+            errors.push("User must be at least 18 years old\n");
         }
     }
 
