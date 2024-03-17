@@ -15,6 +15,6 @@ const jwtConfig = {
     expiration: process.env.JWT_EXPIRATION || "1h"
 };
 
-const mongoURI = process.env.MONGODB_URI || `mongodb+srv://${dbConfig.user}:${dbConfig.password}@capstone-2.s3zi0zl.mongodb.net/${dbConfig.database}?retryWrites=true&w=majority&appName=Capstone-2`
+const mongoURI = process.env.MONGODB_URI
 
 module.exports = { mongoURI, dbConfig, jwtConfig };
